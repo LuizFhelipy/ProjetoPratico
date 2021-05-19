@@ -19,9 +19,9 @@ public class QuoteService {
 	QuoteRepository quoteRepository;
 	
 	public void saveQuote(List<Quote> quotes) {
-		log.debug("saveQuote {}", quotes);
+		log.info("saveQuote");
 		String response = "Salvando Quotes";
-		log.warn(response);
+		log.debug(response);
 		quoteRepository.saveAll(quotes);
 	}
 	
