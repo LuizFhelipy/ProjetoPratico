@@ -6,6 +6,7 @@ import java.util.List;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,8 +18,10 @@ import br.com.stock.quote.manager.model.dto.StockDto;
 
 @Service
 public class StockService {
-
-	private String defaultUrl = "http://localhost:8080";
+	
+	
+	@Value("${manager.url}")
+	private String defaultUrl;
 	private RestTemplate restTemplate = new RestTemplate();
 	
 	Logger log = LoggerFactory.getLogger(StockService.class);
