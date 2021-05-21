@@ -28,7 +28,7 @@ public class StockService {
 
 	@Cacheable(value="liststock")
 	public List<StockDto> listAll() {
-		log.info("lista de stock");
+		log.info("buscando uma lista de stock na API externa");
 		String url = defaultUrl + "/stock";
 
 		StockDto[] stockDto = restTemplate.getForObject(url, StockDto[].class);
@@ -38,7 +38,7 @@ public class StockService {
 	
 	@Cacheable(value="stock")
 	public StockDto GetById(String id) {
-		log.info("apenas um stock");
+		log.info("buscando um stock na API externa");
 		String url = defaultUrl + "/stock" + "/" + id;
 
 		StockDto stockDto = restTemplate.getForObject(url, StockDto.class);

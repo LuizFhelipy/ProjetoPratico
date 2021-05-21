@@ -19,17 +19,12 @@ public class QuoteService {
 	QuoteRepository quoteRepository;
 	
 	public void saveQuote(List<Quote> quotes) {
-		log.info("saveQuote");
-		String response = "Salvando Quotes";
-		log.debug(response);
+		log.debug("Salvando Quotes");
 		quoteRepository.saveAll(quotes);
 	}
 	
 	public List<Quote> findByStockId(String stockId) {
-		
-		log.debug("findByStockId {}", stockId);
-		String response = "Buscando pelo id " + stockId;
-		log.warn(response);
+		log.info("Buscando pelo id " + stockId);
 		return quoteRepository.findByStockId(stockId);
 	}
 }
