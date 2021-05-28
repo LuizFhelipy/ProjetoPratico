@@ -1,6 +1,6 @@
 package br.com.stock.quote.manager.config.validacao;
 
-public class ErroDeFormularioDto {
+public class ErroDto {
 	private String campo;
 	private String erro;
 	
@@ -12,7 +12,7 @@ public class ErroDeFormularioDto {
 		return erro;
 	}
 
-	public ErroDeFormularioDto(String campo, String erro) {
+	public ErroDto(String campo, String erro) {
 		super();
 		this.campo = campo;
 		this.erro = erro;

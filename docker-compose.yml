@@ -1,0 +1,41 @@
+version: '3'
+services:
+    mysql:
+        image: mysql:8
+        container_name: mysql
+        ports:
+            - "3306:3306"
+        environment: 
+            - MYSQL_ROOT_PASSWORD=root
+            - MYSQL_DATABASE=bootdb
+        networks:
+            - stockquotemanager-network
+    stockmanager:
+        image: lucasvilela/stock-manager
+        container_name: stockmanager
+        ports:
+            - "8080:8080"
+        networks: 
+            - stockquotemanager-network
+        depends_on: 
+            - "mysql"
+    stockquotemanager:
+        build: 
+            dockerfile: ./Dockerfile
+            context: .
+        container_name: stockquotemanager
+        ports:
+            - "8081:8081"
+        image: luizfhelipy/stock-quote-manager
+        environment: 
+            - PORT=8081
+            - MYSQL_CONTAINER=mysql
+            - STOCK_MANAGER_CONTAINER=stockmanager
+            - SPRING_PROFILES_ACTIVE=prod
+        networks: 
+            - stockquotemanager-network
+        depends_on: 
+            - "stockmanager"
+networks:
+    stockquotemanager-network:
+        driver: bridge

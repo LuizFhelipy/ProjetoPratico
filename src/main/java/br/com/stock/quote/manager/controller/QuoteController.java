@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import br.com.stock.quote.manager.config.validacao.ErroDeFormularioDto;
+import br.com.stock.quote.manager.config.validacao.ErroDto;
 import br.com.stock.quote.manager.form.StockQuoteForm;
 import br.com.stock.quote.manager.model.Quote;
 
@@ -39,14 +39,14 @@ public class QuoteController {
 	StockService stockService;
 
 	Logger log = LoggerFactory.getLogger(QuoteController.class);
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@PostMapping
-	public ResponseEntity<StockQuoteDto> register(@RequestBody @Valid StockQuoteForm form, UriComponentsBuilder uriBuilder) {
+	public ResponseEntity<?> register(@RequestBody @Valid StockQuoteForm form, UriComponentsBuilder uriBuilder) {
 		
 		StockDto stockDto = stockService.GetById(form.getId());
 		if(stockDto == null) {
 			log.error("Stock não existe");
-			return new ResponseEntity(new ErroDeFormularioDto("id","Não foi encontrado Stock com o id:"+form.getId() +" para inserir os Quotes"), HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErroDto("id","Não foi encontrado Stock com o id:"+form.getId() +" para inserir os Quotes"));
 		}
 		quoteService.saveQuote(form.convert());
 		URI uri = uriBuilder.path("/quote/{id}").buildAndExpand(form.getId()).toUri();
@@ -56,9 +56,9 @@ public class QuoteController {
 		return ResponseEntity.created(uri).body(new StockQuoteDto(form.getId(), quotes));
 		
 	}
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	
 	@GetMapping
-	public ResponseEntity<List<StockQuoteDto>> listAll() {
+	public ResponseEntity<?> listAll() {
 		List<StockDto> stocks = stockService.listAll();
 		List<StockQuoteDto> stockQuote = stocks.stream().map(stock -> {
 			List<Quote> quotes = quoteService.findByStockId(stock.getId());
@@ -67,7 +67,7 @@ public class QuoteController {
 
 		if (stockQuote.isEmpty()) {
 			log.error("Não foi encontrado lista de StockQuotes");
-			return new ResponseEntity(new ErroDeFormularioDto("id","Não foi encontrado StockQuotes"), HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErroDto("id","Não foi encontrado StockQuotes"));
 		} else {
 			log.info("Lista de stockQuotes encontrada");
 			return ResponseEntity.status(200).body(stockQuote);
@@ -75,15 +75,14 @@ public class QuoteController {
 
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@GetMapping("/{id}")
-	public ResponseEntity<StockQuoteDto> listById(@PathVariable String id) {
+	public ResponseEntity<?> listById(@PathVariable String id) {
 		StockDto stock = stockService.GetById(id);
 		List<Quote> quotes = quoteService.findByStockId(id);
 
 		if (stock == null) {
 			log.error("Não foi encontrado StockQuotes com o id: " + id);
-			return new ResponseEntity(new ErroDeFormularioDto("stock","Não foi encontrado Stock com o id: "+ id), HttpStatus.NOT_FOUND);
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErroDto("stock","Não foi encontrado Stock com o id: "+ id));
 		} else {
 			log.info("stockQuotes com o id: " + id + " encontrada");
 			return ResponseEntity.ok(new StockQuoteDto(id, quotes));
